@@ -1,0 +1,42 @@
+<?php
+
+namespace TheRecluse26\ScoutTools\View\Components;
+
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\View\Component;
+use TheRecluse26\ScoutTools\ScoutToolsService;
+
+class ScoutModelTable extends Component
+{
+	private Collection $models;
+
+	private string $bootstrap = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css';
+
+	private string $template = "<link href='%s' rel='stylesheet' crossorigin='anonymous'>
+								<div class='container'>
+								<table class='table table-bordered'>
+									<thead>
+										<th scope='col'>Model</th>
+										<th scope='col'>Indexed Fields</th>
+									</thead>
+									<tbody>
+										%s
+									</tbody>
+								</table>
+								</div>";
+
+	public function __construct()
+	{
+		$service = new ScoutToolsService();
+		$this->models = $service->getSearchableModels();
+	}
+
+	public function render(): string
+	{
+		return sprintf($this->template, $this->bootstrap, $this->models->map(function ($model) {
+			return '<tr>' . Blade::renderComponent(new ScoutModelTableRow($model)) . '</tr>';
+		})->join(''));
+	}
+
+}

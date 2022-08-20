@@ -1,0 +1,72 @@
+{
+  "name": "therecluse26/laravel-scout-tools",
+  "description": "Tools an enhancements for Laravel Scout",
+  "keywords": [
+    "therecluse26",
+    "laravel",
+    "laravel-scout-tools"
+  ],
+  "homepage": "https://github.com/therecluse26/laravel-scout-tools",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "therecluse26",
+      "email": "therecluse26@protonmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.0|^8.1",
+    "haydenpierce/class-finder": "^0.4.3",
+    "spatie/laravel-package-tools": "^1.9.2",
+    "illuminate/contracts": ">=8.0",
+    "laravel/scout": "*"
+  },
+  "require-dev": {
+    "nunomaduro/collision": "^6.0",
+    "nunomaduro/larastan": "^2.0.1",
+    "orchestra/testbench": "^7.0",
+    "pestphp/pest": "^1.21",
+    "pestphp/pest-plugin-laravel": "^1.1",
+    "phpstan/extension-installer": "^1.1",
+    "phpstan/phpstan-deprecation-rules": "^1.0",
+    "phpstan/phpstan-phpunit": "^1.0",
+    "phpunit/phpunit": "^9.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "TheRecluse26\\ScoutTools\\": "src/",
+      "TheRecluse26\\ScoutTools\\Database\\Factories\\": "database/factories"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TheRecluse26\\ScoutTools\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "analyse": "vendor/bin/phpstan analyse",
+    "test": "vendor/bin/pest",
+    "test-coverage": "vendor/bin/pest --coverage",
+    "format": "vendor/bin/pint"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "phpstan/extension-installer": true
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "TheRecluse26\\ScoutTools\\ScoutToolsServiceProvider"
+      ],
+      "aliases": {
+        "ScoutSearch": "TheRecluse26\\ScoutTools\\Facades\\ScoutSearch"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
