@@ -72,6 +72,8 @@ class ScoutToolsService
 	}
 
 	/**
+	 * Refreshes ScoutModel data, searches project files for Laravel Scout `Searchable` trait
+	 *
 	 * @throws Exception
 	 */
 	public function refreshSearchableModels(): void
@@ -93,6 +95,13 @@ class ScoutToolsService
 		}
 	}
 
+	/**
+	 * Gets array keys that get passed to Scout
+	 *
+	 * @param string $model_name
+	 * @return array
+	 * @throws Exception
+	 */
 	public function getSearchableArrayKeys(string $model_name): array
 	{
 		$model = new $model_name();
@@ -103,6 +112,35 @@ class ScoutToolsService
 		return array_keys($model->first()->toSearchableArray());
 	}
 
+	/**
+	 * Returns searchable model data as it's represented to Scout
+	 *
+	 * @param ScoutModel|string $model Searchable model
+	 * @param int|null $paginate
+	 * @return Collection
+	 */
+	public function getSearchableData(ScoutModel|string $model, int $paginate = null): Collection
+	{
+		if ($model instanceof ScoutModel) {
+			$model = $model->model;
+		}
+		if ($paginate) {
+			return $model::paginate($paginate)->map(function ($object) {
+				return $object->toSearchableArray();
+			});
+		}
+		return $model::all()->map(function ($object) {
+			return $object->toSearchableArray();
+		});
+	}
+
+	/**
+	 * Returns list of searchable models
+	 *
+	 * @param bool $refresh Refreshes model list based on project file traits
+	 * @return Collection
+	 * @throws Exception
+	 */
 	public function getSearchableModels(bool $refresh = false): Collection
 	{
 		if ($refresh || ($models = ScoutModel::all())->isEmpty()) {
@@ -113,6 +151,12 @@ class ScoutToolsService
 		return $models;
 	}
 
+	/**
+	 * Returns basic details about ScoutModel record
+	 *
+	 * @param ScoutModel $scout_model
+	 * @return ScoutModel
+	 */
 	public function getModelIndexDetails(ScoutModel $scout_model)
 	{
 		return $scout_model;

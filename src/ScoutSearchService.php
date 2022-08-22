@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheRecluse26\ScoutTools;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -84,24 +85,32 @@ class ScoutSearchService
 	/**
 	 * Executes search from builder
 	 *
-	 * @param Builder $query // Query builder instance returned from $this->buildSearch()
-	 * @param int $limit // How many records to return
-	 * @param int $page // If $limit is defined, which page offset to start on
+	 * @param Builder $query Query builder instance returned from $this->buildSearch()
+	 * @param int|null $paginate Paginate records
 	 * @return Collection
 	 */
-	private function execSearch(Builder $query, int $limit = 0, int $page = 0): Collection
+	private function execSearch(Builder $query, int $paginate = null): Collection
 	{
+		if ($paginate) {
+			return collect($query->paginate($paginate));
+		}
 		return collect($query->get());
 	}
+
 
 	/**
 	 * Searches given model
 	 *
+	 * @param string $model
+	 * @param string $queryString
+	 * @param array $filters
+	 * @param int|null $paginate
+	 * @return Collection
 	 * @throws InvalidFilterArrayFormatException
-	 * @throws InvalidOperatorException
 	 * @throws InvalidFilterColumnException
+	 * @throws InvalidOperatorException
 	 */
-	public function searchModel(string $model, string $queryString, array $filters = [], int $limit = 0, int $page = 0): Collection
+	public function searchModel(string $model, string $queryString, array $filters = [], int $paginate = null): Collection
 	{
 		if (!class_exists($model)) {
 			throw new ModelNotFoundException();
@@ -113,7 +122,7 @@ class ScoutSearchService
 
 		$builder = new $model();
 		$search = $this->buildSearch($builder, $queryString, $filters);
-		$results = $this->execSearch($search);
+		$results = $this->execSearch($search, $paginate);
 
 		foreach ($filters as $filter) {
 			$results = $results->where($filter['column'], $filter['operation'], $filter['value']);
@@ -123,5 +132,24 @@ class ScoutSearchService
 
 	}
 
-
+	/**
+	 * Searches given models (filters not available)
+	 *
+	 * @param array $models
+	 * @param string $queryString
+	 * @param bool $groupResults Group results by model type. If false, returns single flat collection
+	 * @param int|null $paginate
+	 * @return Collection
+	 */
+	public function searchModels(array $models, string $queryString, bool $groupResults = false, int $paginate = null): Collection
+	{
+		if ($groupResults) {
+			return collect($models)->map(function ($model) use ($queryString, $paginate) {
+				return $this->searchModel($model, $queryString, [], $paginate);
+			});
+		}
+		return collect($models)->flatMap(function ($model) use ($queryString, $paginate) {
+			return $this->searchModel($model, $queryString, [], $paginate);
+		});
+	}
 }
