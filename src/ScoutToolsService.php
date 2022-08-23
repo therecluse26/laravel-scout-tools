@@ -122,7 +122,7 @@ class ScoutToolsService
 	public function getSearchableData(ScoutModel|string $model, int $paginate = null): Collection
 	{
 		if ($model instanceof ScoutModel) {
-			$model = $model->model;
+			$model = $model->getModel();
 		}
 		if ($paginate) {
 			return $model::paginate($paginate)->map(function ($object) {

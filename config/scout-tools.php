@@ -5,9 +5,9 @@ return [
 	'routes' => [
 		'middleware' => ['auth:api'],
 		'endpoints' => [
-			'get-models' => ['path' => '/scout/models'],
-			'refresh-models' => ['path' => '/scout/models/refresh'],
-			'index-detail' => ['path' => '/scout/index/{scout_model}'],
+			'get-models' => ['path' => '/api/scout/models'],
+			'refresh-models' => ['path' => '/api/scout/models/refresh'],
+			'index-detail' => ['path' => '/api/scout/index/{model}'],
 		],
 	],
 ];

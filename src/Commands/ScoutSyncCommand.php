@@ -38,7 +38,7 @@ class ScoutSyncCommand extends Command
 
 		if ($this->option('flush')) {
 			foreach ($models as $scoutModel) {
-				$model = $scoutModel->model;
+				$model = $scoutModel->getModel();
 				$this->info("Flushing Scout indexes for $model...");
 				$model = addslashes($model);
 				Artisan::call("scout:flush $model");
@@ -46,7 +46,7 @@ class ScoutSyncCommand extends Command
 		}
 
 		foreach ($models as $scoutModel) {
-			$model = $scoutModel->model;
+			$model = $scoutModel->getModel();
 			$this->info("Updating Scout indexes for $model...");
 			$model = addslashes($model);
 			Artisan::call("scout:import $model");

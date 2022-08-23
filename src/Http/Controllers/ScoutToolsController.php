@@ -31,10 +31,10 @@ class ScoutToolsController extends Controller
 		}
 	}
 
-	public function indexDetail(ScoutToolsService $service, ScoutModel $scout_model, Request $request): JsonResponse
+	public function indexDetail(Request $request, int $model, ScoutToolsService $service): JsonResponse
 	{
 		try {
-			return response()->json($service->getSearchableData($scout_model, $request->query('paginate')));
+			return response()->json($service->getSearchableData(ScoutModel::findOrFail($model), (int)$request->query('paginate')));
 		} catch (\Throwable $e) {
 			return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
 		}
