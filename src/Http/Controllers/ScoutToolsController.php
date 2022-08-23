@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheRecluse26\ScoutTools\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use TheRecluse26\ScoutTools\Models\ScoutModel;
 use TheRecluse26\ScoutTools\ScoutSearchService;
@@ -30,10 +31,10 @@ class ScoutToolsController extends Controller
 		}
 	}
 
-	public function indexDetail(ScoutToolsService $service, ScoutModel $scout_model): JsonResponse
+	public function indexDetail(ScoutToolsService $service, ScoutModel $scout_model, Request $request): JsonResponse
 	{
 		try {
-			return response()->json($service->getModelIndexDetails($scout_model));
+			return response()->json($service->getSearchableData($scout_model, $request->query('paginate')));
 		} catch (\Throwable $e) {
 			return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
 		}
