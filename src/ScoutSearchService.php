@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TheRecluse26\ScoutTools;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -27,9 +26,6 @@ class ScoutSearchService
 	 * @param string $queryString // The query string to search
 	 * @param array $filters
 	 * @return Builder
-	 * @throws InvalidFilterArrayFormatException
-	 * @throws InvalidFilterColumnException
-	 * @throws InvalidOperatorException
 	 */
 	private function buildSearch(SearchableInterface $model, string $queryString, array $filters = []): Builder
 	{

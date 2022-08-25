@@ -161,6 +161,5 @@ class ScoutToolsService
 	{
 		return $scout_model;
 	}
-
-
+	
 }
