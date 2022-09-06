@@ -32,7 +32,7 @@ class ScoutToolsService
 	 *
 	 * @throws Exception
 	 */
-	private function findSearchableModelsInProject(string ...$namespaces): array
+	public function findSearchableModelsInProject(string ...$namespaces): array
 	{
 		$models = [];
 
