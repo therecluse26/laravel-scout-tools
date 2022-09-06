@@ -32,7 +32,7 @@ class ScoutToolsService
 	 *
 	 * @throws Exception
 	 */
-	public function findSearchableModelsInProject(string ...$namespaces): array
+	public static function findSearchableModelsInProject(string ...$namespaces): array
 	{
 		$models = [];
 
@@ -43,7 +43,7 @@ class ScoutToolsService
 
 		// Check if model uses searchable trait
 		foreach ($classes as $class) {
-			if ($this->checkIfSearchableModel($class)) {
+			if (self::checkIfSearchableModel($class)) {
 				$models[] = $class;
 			}
 		}
@@ -57,7 +57,7 @@ class ScoutToolsService
 	 * @param string $class
 	 * @return bool
 	 */
-	private function checkIfSearchableModel(string $class): bool
+	private static function checkIfSearchableModel(string $class): bool
 	{
 		// Ensures that class is an actual Eloquent model
 		if (!Arr::has(class_parents($class), self::MODEL_NAMESPACE)) {
@@ -79,7 +79,7 @@ class ScoutToolsService
 	public function refreshSearchableModels(): void
 	{
 		ScoutModel::truncate();
-		$models = $this->findSearchableModelsInProject('App', 'App\Models');
+		$models = self::findSearchableModelsInProject('App', 'App\Models');
 		foreach ($models as $model) {
 			try {
 				$indexed_fields = $this->getSearchableArrayKeys($model);
