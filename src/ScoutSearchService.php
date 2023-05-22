@@ -24,14 +24,11 @@ class ScoutSearchService
 	 *
 	 * @param SearchableInterface $model // The model that will be searched
 	 * @param string $queryString // The query string to search
-	 * @param array $filters
 	 * @return Builder
 	 */
-	private function buildSearch(SearchableInterface $model, string $queryString, array $filters = []): Builder
+	private function buildSearch(SearchableInterface $model, string $queryString): Builder
 	{
-		$builder = $model::search($queryString);
-
-		return $builder;
+		return $model::search($queryString);
 	}
 
 	/**
@@ -116,9 +113,10 @@ class ScoutSearchService
 			$filters = $this->validateAndSanitizeFilters(new $model(), $filters);
 		}
 
-		$builder = new $model();
-		$search = $this->buildSearch($builder, $queryString, $filters);
-		$results = $this->execSearch($search, $paginate);
+		$results = $this->execSearch(
+			$this->buildSearch(new $model(), $queryString),
+			$paginate
+		);
 
 		foreach ($filters as $filter) {
 			$results = $results->where($filter['column'], $filter['operation'], $filter['value']);
@@ -139,6 +137,7 @@ class ScoutSearchService
 	 */
 	public function searchModels(array $models, string $queryString, bool $groupResults = false, int $paginate = null): Collection
 	{
+
 		if ($groupResults) {
 			return collect($models)->map(function ($model) use ($queryString, $paginate) {
 				return $this->searchModel($model, $queryString, [], $paginate);
